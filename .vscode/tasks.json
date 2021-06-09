@@ -1,0 +1,35 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: gcc.exe アクティブなファイルのビルド",
+			"command": "C:\\gcc_830\\mingw64\\gcc\\bin\\gcc.exe",
+			"args": [
+				"-g",
+				"DLLtest.c",
+				"TestBlock.c",
+				"TestBlock_standalone.c",
+				"TestBlock_act_sens_events.c",
+				"C:\\Users\\esakat\\AppData\\Roaming\\Scilab\\scilab-6.1.0\\mingwlib_x64\\libscicos.a",
+				"C:\\Users\\esakat\\AppData\\Roaming\\Scilab\\scilab-6.1.0\\mingwlib_x64\\libscicos_f.a",
+				"C:\\Users\\esakat\\AppData\\Roaming\\Scilab\\scilab-6.1.0\\mingwlib_x64\\libscicos_blocks.a",
+				"C:\\Users\\esakat\\AppData\\Roaming\\Scilab\\scilab-6.1.0\\mingwlib_x64\\libscicos_blocks_f.a",
+				"-o",
+				"bin\\TestApplication.exe",
+                "-I","C:\\Program Files\\scilab-6.1.0\\modules\\scicos\\includes",
+                "-I","C:\\Program Files\\scilab-6.1.0\\modules\\core\\includes",
+                "-I","C:\\Program Files\\scilab-6.1.0\\modules\\scicos_blocks\\includes",
+				"-Wall", "-Wl,-wrap=main"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"detail": "コンパイラ: C:\\gcc_830\\mingw64\\gcc\\bin\\gcc.exe"
+		}
+	]
+}
