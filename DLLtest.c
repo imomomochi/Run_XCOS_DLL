@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <string.h>
+#include <windows.h>
 #include "machine.h" 
 #include "scicos.h" 
 #include "scicos_malloc.h" 
@@ -10,18 +11,15 @@
 #include "scicos_block4.h"
 
 #define def_arraysize 10
-
-int  TestBlock(scicos_block *block, int flag);
+typedef int  (*dllfunc)(scicos_block *block, int flag);
 
 scicos_block parent_block_TestBlock;
 scicos_block children_block_TestBlock[100];
 
-double rpar[100];
-int ipar[100];
+double  rpar[100];
+int     ipar[100];
 
-int __real_main(int argc, char *argv[]);
-
-int __wrap_main(int argc, char *argv[])
+int main(void)
 {
 
     readconstdata("TestBlock_c.sci",&rpar[0],&ipar[0]);
@@ -60,12 +58,26 @@ int __wrap_main(int argc, char *argv[])
 
     parent_block_TestBlock.nevprt   = 1;
 
-    TestBlock(&parent_block_TestBlock,4);
+    HMODULE dll = LoadLibrary("libTestBlock.dll");
+	if (dll == NULL)
+	{
+		printf("Failer:Load dll.\n");
+		return 0;
+	}
+
+	dllfunc func1 =(dllfunc)GetProcAddress(dll, "TestBlock");
+	if (func1 == NULL)
+	{
+		printf("Failer:Load function.\n");
+		return 0;
+	}
+
+    func1(&parent_block_TestBlock,4);
     for(int i = 0;i<10;i++){
         for(int j = 1;j<10;j++){
             parent_block_TestBlock.nevprt = j;
-            TestBlock(&parent_block_TestBlock,1);
-            TestBlock(&parent_block_TestBlock,2);
+            func1(&parent_block_TestBlock,1);
+            func1(&parent_block_TestBlock,2);
         }
     }
     

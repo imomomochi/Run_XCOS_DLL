@@ -8,8 +8,6 @@
 			"args": [
 				"-g",
 				"DLLtest.c",
-				"TestBlock.c",
-				"TestBlock_void_io.c",
 				"C:\\Users\\esakat\\AppData\\Roaming\\Scilab\\scilab-6.1.0\\mingwlib_x64\\libscicos.a",
 				"C:\\Users\\esakat\\AppData\\Roaming\\Scilab\\scilab-6.1.0\\mingwlib_x64\\libscicos_f.a",
 				"C:\\Users\\esakat\\AppData\\Roaming\\Scilab\\scilab-6.1.0\\mingwlib_x64\\libscicos_blocks.a",
@@ -19,7 +17,6 @@
                 "-I","C:\\Program Files\\scilab-6.1.0\\modules\\scicos\\includes",
                 "-I","C:\\Program Files\\scilab-6.1.0\\modules\\core\\includes",
                 "-I","C:\\Program Files\\scilab-6.1.0\\modules\\scicos_blocks\\includes",
-				"-Wall", "-Wl,-wrap=main"
 			],
 			"options": {
 				"cwd": "${workspaceFolder}"
