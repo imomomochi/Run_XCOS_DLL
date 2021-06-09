@@ -10,7 +10,7 @@
 #include "scicos_free.h" 
 #include "scicos_block4.h"
 
-#define def_arraysize 10
+#define def_arraysize 100
 typedef int  (*dllfunc)(scicos_block *block, int flag);
 
 int main(void)
@@ -77,7 +77,7 @@ int main(void)
 
     // 実行
     TestBlock(&parent_block_TestBlock,4);
-    for(int i = 0;i<10;i++){
+    for(int i = 0;i<100;i++){
         for(int j = 1;j<10;j++){
             parent_block_TestBlock.nevprt = j;
             TestBlock(&parent_block_TestBlock,1);
