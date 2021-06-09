@@ -13,16 +13,17 @@
 #define def_arraysize 10
 typedef int  (*dllfunc)(scicos_block *block, int flag);
 
-scicos_block parent_block_TestBlock;
-scicos_block children_block_TestBlock[100];
-
-double  rpar[100];
-int     ipar[100];
-
 int main(void)
 {
+    double  rpar[100];
+    int     ipar[100];
+    
+    scicos_block parent_block_TestBlock;
+    scicos_block children_block_TestBlock[100];
 
-    readconstdata("TestBlock_c.sci",&rpar[0],&ipar[0]);
+    if(readconstdata("TestBlock_c.sci",&rpar[0],&ipar[0]) != 0){
+        return -1;
+    }
     
     double z[100];
     for(int i=0;i<100;i++){
@@ -58,6 +59,7 @@ int main(void)
 
     parent_block_TestBlock.nevprt   = 1;
 
+    // DLL読み込み
     HMODULE dll = LoadLibrary("libTestBlock.dll");
 	if (dll == NULL)
 	{
@@ -65,25 +67,27 @@ int main(void)
 		return 0;
 	}
 
-	dllfunc func1 =(dllfunc)GetProcAddress(dll, "TestBlock");
-	if (func1 == NULL)
+    // DLLから関数を読み込み
+	dllfunc TestBlock =(dllfunc)GetProcAddress(dll, "TestBlock");
+	if (TestBlock == NULL)
 	{
 		printf("Failer:Load function.\n");
 		return 0;
 	}
 
-    func1(&parent_block_TestBlock,4);
+    // 実行
+    TestBlock(&parent_block_TestBlock,4);
     for(int i = 0;i<10;i++){
         for(int j = 1;j<10;j++){
             parent_block_TestBlock.nevprt = j;
-            func1(&parent_block_TestBlock,1);
-            func1(&parent_block_TestBlock,2);
+            TestBlock(&parent_block_TestBlock,1);
+            TestBlock(&parent_block_TestBlock,2);
         }
     }
-    
+    TestBlock(&parent_block_TestBlock,5);
 }
 
-    
+// 適当に作った読み込み処理
 int readconstdata(char fname[],double *rpar,int *ipar) {
     FILE *fp; // FILE型構造体
     char tmp[1000];
