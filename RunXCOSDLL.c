@@ -9,43 +9,49 @@
 #include "scicos_malloc.h" 
 #include "scicos_free.h" 
 #include "scicos_block4.h"
+#include "RunXCOSDLL.h"
 
-#define def_arraysize 100
 typedef int  (*dllfunc)(scicos_block *block, int flag);
+static dllfunc TestBlock;
+static scicos_block parent_block_TestBlock;
 
-int main(void)
-{
-    double  rpar[100];
-    int     ipar[100];
+static boolean init_flg = FALSE;
+
+int init(double *input_data,int input_size,double *output_data,int output_size)
+{ 
+    #define def_arraysize 100
+
+    static double  z[100];
     
-    scicos_block parent_block_TestBlock;
-    scicos_block children_block_TestBlock[100];
+    static scicos_block children_block_TestBlock[100];
+
+    // memalocでやりたいがめんどくさいので適当に
+    static double   array_temp_output[def_arraysize];
+    static double   rpar[100];
+    static int      ipar[100];
+
+    static double   *array_pinput[def_arraysize];
+    static double   *array_poutput[def_arraysize];
+    static double   *array_temp_poutput[def_arraysize];
+    static double   *p_rpar = &rpar[0];
+    static int      *p_ipar = &ipar[0];
 
     if(readconstdata("TestBlock_c.sci",&rpar[0],&ipar[0]) != 0){
         return -1;
     }
     
-    double z[100];
-    for(int i=0;i<100;i++){
-        z[i]=0;
+    memset(&z[0],0x00,sizeof(z));
+    
+    for(int i=0;i<input_size;i++){
+        array_pinput[i]  = &input_data[i];
     }
-    double array_input[def_arraysize];
-    double array_output[def_arraysize];
-    double array_temp_output[def_arraysize];
 
-    double  *array_pinput[def_arraysize];
-    double  *array_poutput[def_arraysize];
-    double  *array_temp_poutput[def_arraysize];
-    double  *p_rpar = &rpar[0];
-    int     *p_ipar = &ipar[0];
-
+    for(int i=0;i<output_size;i++){
+        array_poutput[i] = &output_data[i];
+    }
+    
     for(int i=0;i<def_arraysize;i++){
-        array_input[i] = 1;
-        array_output[i] = 0;
         array_temp_output[i] = 0;
-
-        array_pinput[i]         = &array_input[i];
-        array_poutput[i]        = &array_output[i];
         array_temp_poutput[i]   = &array_temp_output[i];
     }
 
@@ -68,23 +74,27 @@ int main(void)
 	}
 
     // DLLから関数を読み込み
-	dllfunc TestBlock =(dllfunc)GetProcAddress(dll, "TestBlock");
+	TestBlock =(dllfunc)GetProcAddress(dll, "TestBlock");
 	if (TestBlock == NULL)
 	{
 		printf("Failer:Load function.\n");
 		return 0;
 	}
+    init_flg = FALSE;
+}
 
-    // 実行
-    TestBlock(&parent_block_TestBlock,4);
-    for(int i = 0;i<100;i++){
+void operate(void)
+{
+    if(init_flg == FALSE){
+        init_flg = TRUE;
+        TestBlock(&parent_block_TestBlock,4);
+    }else{
         for(int j = 1;j<10;j++){
             parent_block_TestBlock.nevprt = j;
-            TestBlock(&parent_block_TestBlock,1);
             TestBlock(&parent_block_TestBlock,2);
+            TestBlock(&parent_block_TestBlock,1);
         }
     }
-    TestBlock(&parent_block_TestBlock,5);
 }
 
 // 適当に作った読み込み処理

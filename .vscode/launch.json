@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "gcc.exe - アクティブ ファイルのビルドとデバッグ",
+            "name": "gcc.exe - コードテスト",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}\\bin\\TestApplication.exe",
+            "program": "${workspaceRoot}\\bin\\TestRunXCOSDLL.exe",
             "args": [
             ],
             "stopAtEntry": false,
@@ -24,7 +24,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: gcc.exe アクティブなファイルのビルド"
+            "preLaunchTask": "C/C++: gcc.exe コードテスト"
         }
     ]
 }
